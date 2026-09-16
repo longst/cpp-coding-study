@@ -22,6 +22,13 @@ This repository is my local record for learning C++ through data structures and 
   - `queue`
   - `priority_queue`
 
+## Learning history
+
+- [Detailed C++ and LeetCode learning history](reports/cpp-leetcode-learning-history.md)
+  - 31 distinct problems, counted without duplicate revisions or general topics
+  - per-problem techniques, approaches, mistakes, corrections, and complexity
+  - recurring error taxonomy, progression, next plan, and review checklist
+
 ## How to use this repo
 
 1. Add each solved problem under `problems/`.
@@ -47,6 +54,8 @@ This repository is my local record for learning C++ through data structures and 
 │   ├── search-insert-position.md
 │   ├── str-str.md
 │   └── valid-parentheses.md
+├── reports/
+│   └── cpp-leetcode-learning-history.md
 ├── skills/
 │   ├── add-new-skill.md
 │   ├── track-data-structures.md
@@ -57,4 +66,3 @@ This repository is my local record for learning C++ through data structures and 
 └── src/
     └── plus_one.cpp
 ```
-
