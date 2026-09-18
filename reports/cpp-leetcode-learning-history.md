@@ -4,6 +4,8 @@
 
 This record contains **37 distinct LeetCode problems** studied from Palindrome
 Number through Number of 1 Bits. The count represents unique problem statements,
+This record contains **31 distinct LeetCode problems** studied from Palindrome
+Number through Add Two Numbers. The count represents unique problem statements,
 not the number of drafts, solution revisions, code snippets, or general C++
 topics discussed.
 
@@ -18,6 +20,11 @@ before `writeIndex` is valid," "the stack contains unmatched openings," "the
 window set has no duplicate characters," "the binary-search answer remains in
 `[left, right)`," or "the recursive function returns the answer for this
 subtree."
+Floyd's cycle detection, and digit-by-digit arithmetic. The clearest progress is
+the shift from trying to manipulate examples directly toward maintaining an
+invariant: "everything before `writeIndex` is valid," "the stack contains
+unmatched openings," "the binary-search answer remains in `[left, right)`," or
+"the recursive function returns the answer for this subtree."
 
 The most persistent difficulties were not a lack of algorithm ideas, but
 implementation correctness:
@@ -34,6 +41,7 @@ implementation correctness:
 - separating container allocation from allocation of each element's contents;
 - ordering dependent operations correctly, especially shifts and bit insertion;
 - handling edge cases and syntax punctuation before tracing the algorithm.
+- carrying state correctly across digit-by-digit arithmetic.
 
 Early brute-force approaches are not automatically wrong. For example,
 checking every buy/sell pair for Best Time to Buy and Sell Stock is logically
@@ -47,6 +55,7 @@ understand the mathematical result.
 ### Total
 
 **37 distinct coding problems**
+**31 distinct coding problems**
 
 ### What counts
 
@@ -79,17 +88,23 @@ conversation extend the record through Number of 1 Bits. Later entries below
 therefore describe the recorded approaches and mistakes conservatively; they do
 not claim submission, acceptance, or completion outcomes that are not present
 in the records.
+different order). The supplied learning-history inventory extends the record
+through Add Two Numbers. Later entries below therefore describe the recorded
+approaches and mistakes conservatively; they do not claim submission,
+acceptance, or completion outcomes that are not present in the records.
 
 The existing `notes/session-summary.md` mentions "Contains duplicate," but that
 item is not in the cross-checked distinct-problem inventory and has no dedicated
 problem record. It is treated here as `unordered_set` practice rather than
 silently increasing the verified total to 38.
+silently increasing the verified total to 32.
 
 ## Categorized inventory
 
 | Category | Count | Distinct problems |
 |---|---:|---|
 | Arrays, strings, binary search, and simulation | 13 | Palindrome Number; Remove Duplicates from Sorted Array; Remove Element; Find the Index of the First Occurrence in a String; Length of Last Word; Search Insert Position; Plus One; Merge Sorted Array; Longest Common Prefix; Best Time to Buy and Sell Stock; Valid Palindrome; Longest Substring Without Repeating Characters; Zigzag Conversion |
+| Arrays, strings, and binary search | 11 | Palindrome Number; Remove Duplicates from Sorted Array; Remove Element; Find the Index of the First Occurrence in a String; Length of Last Word; Search Insert Position; Plus One; Merge Sorted Array; Longest Common Prefix; Best Time to Buy and Sell Stock; Valid Palindrome |
 | Stack | 1 | Valid Parentheses |
 | Linked lists | 5 | Merge Two Sorted Lists; Remove Duplicates from Sorted List; Linked List Cycle; Intersection of Two Linked Lists; Add Two Numbers |
 | Binary trees | 8 | Same Tree; Symmetric Tree; Maximum Depth of Binary Tree; Convert Sorted Array to Binary Search Tree; Balanced Binary Tree; Minimum Depth of Binary Tree; Path Sum; Binary Tree Preorder Traversal |
@@ -97,6 +112,8 @@ silently increasing the verified total to 38.
 | Hash counting / voting | 1 | Majority Element |
 | Bit manipulation / arithmetic encoding | 6 | Add Binary; Single Number; Excel Sheet Column Title; Excel Sheet Column Number; Reverse Bits; Number of 1 Bits |
 | **Total** | **37** | Each problem appears exactly once in the numbered record below |
+| Bit manipulation / arithmetic encoding | 3 | Add Binary; Single Number; Excel Sheet Column Title |
+| **Total** | **31** | Each problem appears exactly once in the numbered record below |
 
 > The category counts use one primary category per problem. Several problems
 > naturally overlap categories; for example, Plus One and Add Binary are both
@@ -1012,6 +1029,7 @@ either a fixed 32 iterations or `n != 0`.
 | Error family | Representative examples | Why it happens | Review habit |
 |---|---|---|---|
 | Bounds and off-by-one | `words[words.size()]`; starting Plus One at `size()`; allowing Zigzag row `numRows`; advancing sliding-window `right` past the string | Confusing element count with last index | Write the valid interval beside every loop |
+| Bounds and off-by-one | `words[words.size()]`; starting Plus One at `size()`; missing final `strStr` candidate | Confusing element count with last index | Write the valid interval beside every loop |
 | Unsigned underflow | `size() - 1`; `haystack.size() - needle.size()` | `size()` returns an unsigned type | Guard emptiness/relative size first, or cast before subtracting |
 | Unsafe condition order | `stack.top()` before `empty()`; `fast->next` before `fast` | Dereference occurs before safety is established | Put the cheapest safety guard on the left of `&&`/`||` |
 | Object/pointer/value confusion | `current = list1` instead of linking; comparing list values for intersection | Several related entities have similar names | Say aloud: object, address, link, or stored value |
@@ -1024,6 +1042,7 @@ either a fixed 32 iterations or `n != 0`.
 | State leakage/shadowing / inconsistency | Stale carry; range-loop shadowing; testing `n` while shifting `input` | State is updated in multiple places or similar names drift apart | Compute next state once and test/advance the same variable |
 | Container versus element allocation | Allocated Zigzag rows but indexed empty row strings | Creating outer elements does not create indexed contents inside each string | Use `push_back` for growth; index only existing elements |
 | Operation ordering | Inserted a bit before shifting the reversed result; erased the duplicate instead of the window's left edge | Individually valid operations break the invariant in the wrong order | Trace one iteration as ordered state transitions |
+| State leakage/shadowing | Stale carry; local variable shadows result | State is updated in multiple places | Compute next state once per iteration with distinct names |
 | Requirement mismatch | Set for in-place deduplication; sort/set for Single Number | First correct-output idea ignores constraints | Translate every constraint into a design test |
 | Directional in-place update | Pascal II updated left-to-right | New values overwrite dependencies | Determine whether dependencies are old-left or old-right |
 | Complexity gap | `O(n^2)` stock-pair search | Brute force models the statement directly | Ask what one summary of the prefix would replace an inner loop |
@@ -1031,6 +1050,7 @@ either a fixed 32 iterations or `n != 0`.
 | Character classification | `isalpha` instead of `isalnum` | Similar API names hide semantic differences | Restate the exact accepted character set |
 | Edge cases | Missing `numRows == 1`; empty inputs; final carry; null children | The main path is coded before boundary behavior is named | List smallest, empty, and boundary inputs before coding |
 | Syntax and punctuation | Typos, missing semicolons/returns, stray semicolon after `for`, brace/`else` mismatch | C++ syntax load distracts from algorithm logic | Compile after the smallest complete unit and read the first error |
+| Syntax and naming | Typos, missing semicolons, type name used as a variable | C++ syntax load distracts from algorithm logic | Compile after the smallest complete unit and read the first error |
 
 ### Concrete safety patterns
 
@@ -1068,6 +1088,12 @@ memory safety and termination.
 | `std::queue` | FIFO model and level-order/BFS reasoning | Minimum Depth alternative and tree level-order study |
 | `std::unordered_set` | Fast membership, no indexing/order, extra-space tradeoff, sliding-window membership | Early deduplication, cycle/single-number alternatives, Longest Substring |
 | `std::unordered_map` | Key-value lookup, frequency counting, and increment semantics | General character-counting study and Majority Element |
+| `std::vector` | Indexing, references, in-place writes, capacity already reserved by a problem | Remove Duplicates, Remove Element, Merge Sorted Array, Pascal I/II, Plus One |
+| `std::string` | Indexing, `substr`, character arithmetic, normalization, reverse-in-place | Palindrome Number, `strStr`, Add Binary, Valid Palindrome, Excel Column Title |
+| `std::stack` | LIFO matching and safe `top()` / `pop()` access | Valid Parentheses, iterative preorder |
+| `std::queue` | FIFO model and level-order/BFS reasoning | Minimum Depth alternative and tree level-order study |
+| `std::unordered_set` | Fast membership, no indexing/order, extra-space tradeoff | Early deduplication and cycle/single-number alternatives |
+| `std::unordered_map` | Key-value lookup and frequency counting | General character-counting study and matching alternatives |
 | `std::priority_queue` | Heap interface and max-heap default | General topic; not counted as a distinct solved problem |
 | Linked lists | `ListNode*`, `->`, traversal, splicing, identity, dummy heads | Merge Lists, Deduplicate List, Cycle, Intersection, Add Two Numbers |
 | Binary trees | Null/leaf semantics, subtree contracts, DFS orders, height/depth | Same Tree through Binary Tree Preorder Traversal |
@@ -1079,6 +1105,8 @@ memory safety and termination.
 | Boyer-Moore voting | Majority cancellation with a candidate and count invariant | Majority Element |
 | Bit manipulation | XOR cancellation, low-bit testing, shifts, OR, and clearing the lowest set bit | Single Number, Reverse Bits, Number of 1 Bits |
 | Arithmetic simulation | Carry propagation and 1-indexed base conversion in both directions | Plus One, Add Binary, both Excel column problems, Add Two Numbers |
+| Bit manipulation | XOR cancellation | Single Number |
+| Arithmetic simulation | Carry propagation and 1-indexed base conversion | Plus One, Add Binary, Excel title, Add Two Numbers |
 | Complexity analysis | Correctness versus constraint compliance | Stock, Single Number, Balanced Tree, in-place problems |
 
 ## Progression and strengths
@@ -1122,6 +1150,8 @@ memory safety and termination.
 - Re-solve six representative problems without notes: Search Insert Position,
   Merge Two Sorted Lists, Minimum Depth, Longest Substring, Zigzag Conversion,
   and Reverse Bits.
+- Re-solve five representative problems without notes: Remove Element, Search
+  Insert Position, Merge Two Sorted Lists, Minimum Depth, and Add Two Numbers.
 - Before coding each one, write:
   - valid index/pointer range;
   - loop or recursive invariant;
@@ -1174,12 +1204,17 @@ memory safety and termination.
   order before compiling.
 
 ### Phase 6: Expansion
+    Array).
+- Record both versions and explain precisely what resource changed.
+
+### Phase 5: Consolidation and expansion
 
 - Add hash-map problems such as Two Sum and Valid Anagram.
 - Add queue/BFS problems such as Binary Tree Level Order Traversal.
 - Add two-pointer problems such as Move Zeroes.
 - Add one basic heap problem after `priority_queue` operations are comfortable,
   then try one additional sliding-window problem.
+- Add one basic heap problem after `priority_queue` operations are comfortable.
 - Use spaced repetition: revisit a problem after 1 day, 1 week, and 1 month,
   coding from the invariant rather than memorizing lines.
 
