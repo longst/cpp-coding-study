@@ -21,4 +21,9 @@ Use this file to track recurring C++ mistakes, why they happen, and the correct 
 | 2026-09-06 | Search insert position | Accessed `middle + 1` and `middle - 1` | Can go out of bounds | Use standard binary search boundaries |
 | 2026-09-06 | Plus one | Converted digit vector to integer | Large input can overflow integer types | Process digits from right to left with carry |
 | 2026-09-07 | Plus one | Started loop at `digits.size()` | Valid last index is `digits.size() - 1` | Start at `static_cast<int>(digits.size()) - 1` |
-
+| 2026-09-18 | Longest substring | Used the window set's size as the input loop bound and erased the right character on duplicates | The set changes size and the window must shrink from its left edge | Bound `right` by `s.size()` and erase `s[left++]` until the duplicate is gone |
+| 2026-09-18 | Zigzag conversion | Allocated row strings but indexed characters inside still-empty strings | Allocating the outer vector does not allocate indexed characters in each string | Append with `rows[currentRow].push_back(ch)` and toggle direction at row bounds |
+| 2026-09-18 | Majority element | Used `=` instead of `==` in Boyer-Moore conditions and wrote `dic[i] = dic[i]++` | Assignment mutates state, and post-increment returns the old value that was assigned back | Compare with `==`; count with `++dic[value]` |
+| 2026-09-18 | Excel column number | Converted each character correctly but did not accumulate its position | Each new digit must shift the previous prefix by one base-26 place | Use `total = total * 26 + (ch - 'A' + 1)` |
+| 2026-09-18 | Reverse bits | Inserted a bit before shifting an uninitialized result | The final inserted bit was shifted once too far, and uninitialized reads are invalid | Start with `uint32_t result = 0`, then use `result = (result << 1) \| (n & 1)` |
+| 2026-09-18 | Number of 1 bits | Tested `n & 1` while shifting a different variable | The same original bit was inspected repeatedly | Test and shift the same variable, or clear bits with `n &= n - 1` |

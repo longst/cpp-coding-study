@@ -2,19 +2,22 @@
 
 ## Executive summary
 
-This record contains **31 distinct LeetCode problems** studied from Palindrome
-Number through Add Two Numbers. The count represents unique problem statements,
+This record contains **37 distinct LeetCode problems** studied from Palindrome
+Number through Number of 1 Bits. The count represents unique problem statements,
 not the number of drafts, solution revisions, code snippets, or general C++
 topics discussed.
 
 The learning path moved from basic indexing and string conversion into reusable
 patterns: two pointers, write indices, stacks, binary search, linked-list
 splicing, recursion on trees, dynamic programming, hash-based lookup, XOR,
-Floyd's cycle detection, and digit-by-digit arithmetic. The clearest progress is
-the shift from trying to manipulate examples directly toward maintaining an
-invariant: "everything before `writeIndex` is valid," "the stack contains
-unmatched openings," "the binary-search answer remains in `[left, right)`," or
-"the recursive function returns the answer for this subtree."
+Floyd's cycle detection, digit-by-digit arithmetic, sliding windows, row-by-row
+simulation, Boyer-Moore voting, base conversion in both directions, and
+foundational bit manipulation. The clearest progress is the shift from trying
+to manipulate examples directly toward maintaining an invariant: "everything
+before `writeIndex` is valid," "the stack contains unmatched openings," "the
+window set has no duplicate characters," "the binary-search answer remains in
+`[left, right)`," or "the recursive function returns the answer for this
+subtree."
 
 The most persistent difficulties were not a lack of algorithm ideas, but
 implementation correctness:
@@ -25,7 +28,12 @@ implementation correctness:
 - advancing every pointer on every intended path;
 - defining recursion by an exact base case and returning recursive results;
 - preserving problem requirements such as in-place or constant-space behavior;
-- carrying state correctly across digit-by-digit arithmetic.
+- carrying state correctly across digit-by-digit arithmetic;
+- distinguishing assignment (`=`) from equality (`==`) in conditions;
+- initializing state before reading it and keeping loop variables consistent;
+- separating container allocation from allocation of each element's contents;
+- ordering dependent operations correctly, especially shifts and bit insertion;
+- handling edge cases and syntax punctuation before tracing the algorithm.
 
 Early brute-force approaches are not automatically wrong. For example,
 checking every buy/sell pair for Best Time to Buy and Sell Stock is logically
@@ -38,7 +46,7 @@ understand the mathematical result.
 
 ### Total
 
-**31 distinct coding problems**
+**37 distinct coding problems**
 
 ### What counts
 
@@ -66,27 +74,29 @@ problem. The other traversal orders remain supporting concepts.
 Repository notes and source files provide detailed direct evidence for the
 first nine problems in the historical sequence (Palindrome Number through Plus
 One, with Search Insert Position and Length of Last Word discussed in a
-different order). The supplied learning-history inventory extends the record
-through Add Two Numbers. Later entries below therefore describe the recorded
-approaches and mistakes conservatively; they do not claim submission,
-acceptance, or completion outcomes that are not present in the records.
+different order). The supplied learning-history inventory and subsequent
+conversation extend the record through Number of 1 Bits. Later entries below
+therefore describe the recorded approaches and mistakes conservatively; they do
+not claim submission, acceptance, or completion outcomes that are not present
+in the records.
 
 The existing `notes/session-summary.md` mentions "Contains duplicate," but that
 item is not in the cross-checked distinct-problem inventory and has no dedicated
 problem record. It is treated here as `unordered_set` practice rather than
-silently increasing the verified total to 32.
+silently increasing the verified total to 38.
 
 ## Categorized inventory
 
 | Category | Count | Distinct problems |
 |---|---:|---|
-| Arrays, strings, and binary search | 11 | Palindrome Number; Remove Duplicates from Sorted Array; Remove Element; Find the Index of the First Occurrence in a String; Length of Last Word; Search Insert Position; Plus One; Merge Sorted Array; Longest Common Prefix; Best Time to Buy and Sell Stock; Valid Palindrome |
+| Arrays, strings, binary search, and simulation | 13 | Palindrome Number; Remove Duplicates from Sorted Array; Remove Element; Find the Index of the First Occurrence in a String; Length of Last Word; Search Insert Position; Plus One; Merge Sorted Array; Longest Common Prefix; Best Time to Buy and Sell Stock; Valid Palindrome; Longest Substring Without Repeating Characters; Zigzag Conversion |
 | Stack | 1 | Valid Parentheses |
 | Linked lists | 5 | Merge Two Sorted Lists; Remove Duplicates from Sorted List; Linked List Cycle; Intersection of Two Linked Lists; Add Two Numbers |
 | Binary trees | 8 | Same Tree; Symmetric Tree; Maximum Depth of Binary Tree; Convert Sorted Array to Binary Search Tree; Balanced Binary Tree; Minimum Depth of Binary Tree; Path Sum; Binary Tree Preorder Traversal |
 | Dynamic programming / generated sequences | 3 | Climbing Stairs; Pascal's Triangle; Pascal's Triangle II |
-| Bit manipulation / arithmetic encoding | 3 | Add Binary; Single Number; Excel Sheet Column Title |
-| **Total** | **31** | Each problem appears exactly once in the numbered record below |
+| Hash counting / voting | 1 | Majority Element |
+| Bit manipulation / arithmetic encoding | 6 | Add Binary; Single Number; Excel Sheet Column Title; Excel Sheet Column Number; Reverse Bits; Number of 1 Bits |
+| **Total** | **37** | Each problem appears exactly once in the numbered record below |
 
 > The category counts use one primary category per problem. Several problems
 > naturally overlap categories; for example, Plus One and Add Binary are both
@@ -799,11 +809,209 @@ pointers.
 **Complexity:** `O(max(n, m))` time and `O(max(n, m))` space for the newly
 created result list.
 
+### 32. Longest Substring Without Repeating Characters
+
+**Problem / level:** LeetCode 3 — Medium.
+
+**Main technique / data structure:** Sliding window with
+`std::unordered_set<char>`.
+
+**User's approach:** Correctly recognized that a set could track characters and
+that two indices could describe a moving substring.
+
+**Issues encountered:**
+
+- The loop used `a_set.size()` instead of `s.size()`, so its bound changed with
+  the window rather than covering the input.
+- An accidental semicolon after `for` detached the intended loop body.
+- The membership call was written as `contain`; in C++20 the method is
+  `contains` (or `find`/`count` in earlier standards).
+- The duplicate condition was initially reversed.
+- `rightIndex` could move out of bounds before indexing `s[rightIndex]`.
+- On a duplicate, the code erased `s[rightIndex]`; the window must instead
+  shrink from the left by erasing `s[left]`.
+- `std::max(maxLength: ...)` used invalid named-argument-like syntax.
+
+**Corrected insight / algorithm:** Maintain a window `[left, right]` whose set
+contains no duplicates. For each `right`, repeatedly erase `s[left]` and
+increment `left` while `s[right]` is already present. Insert `s[right]`, then
+update the best length with `right - left + 1`.
+
+**Complexity:** `O(n)` time because each character enters and leaves the set at
+most once, and `O(min(n, alphabet size))` space.
+
+**Learning takeaway:** A sliding window works when its invariant is explicit:
+the set represents exactly the current duplicate-free window, and its length
+comes from the indices, not from using the container as the input bound.
+
+### 33. Zigzag Conversion
+
+**Problem / level:** LeetCode 6 — Medium.
+
+**Main technique / data structure:** Direction-changing simulation with one
+`std::string` per row in a `std::vector<std::string>`.
+
+**User's approach:** First tried to model the layout with two-dimensional
+`x`/`y` coordinates, then allocated a vector of rows.
+
+**Issues encountered:**
+
+- The row vector was initially not allocated.
+- After allocating rows, each inner string was still empty, so
+  `output[y][x]` remained out of bounds.
+- The bottom check used `y < numRows`, which still permits `y == numRows`
+  after an increment.
+- Brace and `else` placement caused control-flow and syntax problems.
+- `x` was unused once the representation became row-based.
+- Filtering spaces was unnecessary and would change valid input.
+- The first complete draft omitted its return statement.
+- The `numRows == 1` edge case was missed.
+- A range loop shadowed an existing variable name.
+
+**Corrected insight / algorithm:** If `numRows == 1`, return `s`. Otherwise,
+allocate `numRows` strings, append each character with `push_back` to the
+current row, and reverse direction whenever the current row is `0` or
+`numRows - 1`. Concatenate the rows at the end.
+
+**Complexity:** `O(n)` time and `O(n)` space for the row strings and result.
+
+**Learning takeaway:** Choose a representation that stores only the required
+output. Allocating a container of strings creates the rows, but indexing inside
+an empty string is not the same as appending to it.
+
+### 34. Majority Element
+
+**Problem / level:** LeetCode 169 — Easy.
+
+**Main technique / data structure:** Frequency counting with
+`std::unordered_map<int, int>`, followed by Boyer-Moore voting for constant
+space.
+
+**User's approach:** The first version compared every value only with
+`nums[0]`. A map-based revision then counted occurrences, before the work moved
+to Boyer-Moore voting.
+
+**Issues encountered:**
+
+- An `unordered_map` was declared but not used in the first approach.
+- `max_count` was read without initialization, and the function omitted a
+  return.
+- `dic[i] = dic[i]++` assigns the old post-increment value back, cancelling the
+  increment.
+- The map revision returned the frequency instead of the element and missed a
+  semicolon.
+- In Boyer-Moore, `candidate = 0` and then `count = 0` were used inside
+  conditions instead of equality comparisons with `==`.
+- Resetting `candidate` to zero was unnecessary and obscured the invariant.
+
+**Corrected insight / algorithm:** With a map, increment `counts[value]` and
+return the value whose count exceeds `nums.size() / 2`. For Boyer-Moore, when
+`count == 0`, choose the current value as the candidate; add one for the same
+value and subtract one for a different value. The guaranteed majority survives
+pairwise cancellation.
+
+**Complexity:** The map solution is `O(n)` time and `O(n)` space. Boyer-Moore is
+`O(n)` time and `O(1)` space.
+
+**Learning takeaway:** Assignment changes state; equality tests state. The
+Boyer-Moore invariant is simpler when candidate selection happens only at
+`count == 0`, followed by one uniform `+1`/`-1` update.
+
+### 35. Excel Sheet Column Number
+
+**Problem / level:** LeetCode 171 — Easy.
+
+**Main technique / data structure:** Left-to-right positional accumulation in
+bijective base 26; no auxiliary container is needed.
+
+**User's approach:** Correctly converted each letter with
+`columnTitle[i] - 'A' + 1`, but was unsure how to combine the positional values.
+
+**Issues encountered:**
+
+- The accumulation expression was incomplete and contained an invalid `44`
+  artifact.
+- The function had no return statement.
+- The place-value relationship between successive letters was not yet clear.
+
+**Corrected insight / algorithm:** Read letters from left to right and apply
+`total = total * 26 + value`. Multiplication shifts the accumulated prefix one
+base-26 position before the next 1-to-26 digit is added.
+
+**Complexity:** `O(n)` time and `O(1)` space.
+
+**Learning takeaway:** This is the inverse of Excel Sheet Column Title.
+Encoding repeatedly extracts rightmost digits; decoding repeatedly shifts the
+current prefix and adds the next digit.
+
+### 36. Reverse Bits
+
+**Problem / level:** LeetCode 190 — Easy.
+
+**Main technique / data structure:** Fixed-width bit extraction, shifting, and
+bitwise OR with `uint32_t`.
+
+**User's approach:** There was no initial algorithm; the study introduced
+`n & 1`, shifts, and bitwise OR. The first implementation collected one bit per
+iteration.
+
+**Issues encountered:**
+
+- The result variable was not initialized, so shifting it read an indeterminate
+  value.
+- Semicolons were missing.
+- A signed integer type was used even though the problem operates on 32-bit
+  unsigned data.
+- Inserting the low bit before shifting the result shifted every collected bit,
+  including the final one, one position too far.
+
+**Corrected insight / algorithm:** Initialize `uint32_t result = 0` and repeat
+exactly 32 times:
+`result = (result << 1) | (n & 1); n >>= 1;`. Shift the accumulated result
+first, insert the extracted bit, then advance the input.
+
+**Complexity:** `O(1)` time for exactly 32 iterations and `O(1)` space.
+
+**Learning takeaway:** For stateful bit algorithms, operation order is part of
+correctness. Write the before-and-after bit positions for one iteration before
+coding the loop.
+
+### 37. Number of 1 Bits
+
+**Problem / level:** LeetCode 191 — Easy.
+
+**Main technique / data structure:** Bit testing and shifting; Brian
+Kernighan's bit-clearing method is an optimized alternative.
+
+**User's approach:** Reused the new bit concepts, but introduced a separate
+`input` variable and a constructed `current`/digit mask.
+
+**Issues encountered:**
+
+- The condition checked `n & 1` while shifting `input`, so the same original
+  bit of `n` was inspected repeatedly.
+- The loop condition `current < input` did not represent when all bits had been
+  processed.
+- Building a separate `current` mask was unrelated to the simpler termination
+  condition and made variable consistency harder.
+
+**Corrected insight / algorithm:** The direct method repeatedly adds `n & 1` to
+the count and shifts `n >>= 1`. Alternatively, Brian Kernighan's
+`n &= n - 1` clears the lowest set bit each iteration, so increment the count
+until `n == 0`.
+
+**Complexity:** The direct fixed-width method is `O(1)` for 32 bits; Brian
+Kernighan takes `O(k)` iterations for `k` set bits. Both use `O(1)` space.
+
+**Learning takeaway:** Test and advance the same state variable. A loop's
+condition should directly express remaining work; for bit counting, that is
+either a fixed 32 iterations or `n != 0`.
+
 ## Recurring error taxonomy
 
 | Error family | Representative examples | Why it happens | Review habit |
 |---|---|---|---|
-| Bounds and off-by-one | `words[words.size()]`; starting Plus One at `size()`; missing final `strStr` candidate | Confusing element count with last index | Write the valid interval beside every loop |
+| Bounds and off-by-one | `words[words.size()]`; starting Plus One at `size()`; allowing Zigzag row `numRows`; advancing sliding-window `right` past the string | Confusing element count with last index | Write the valid interval beside every loop |
 | Unsigned underflow | `size() - 1`; `haystack.size() - needle.size()` | `size()` returns an unsigned type | Guard emptiness/relative size first, or cast before subtracting |
 | Unsafe condition order | `stack.top()` before `empty()`; `fast->next` before `fast` | Dereference occurs before safety is established | Put the cheapest safety guard on the left of `&&`/`||` |
 | Object/pointer/value confusion | `current = list1` instead of linking; comparing list values for intersection | Several related entities have similar names | Say aloud: object, address, link, or stored value |
@@ -811,13 +1019,18 @@ created result list.
 | Dummy-node mistakes | Returning dummy instead of `dummy.next`; unclear lifetime/ownership | Sentinel and real data are conflated | Draw sentinel separately and mark the returned first real node |
 | Recursive contract errors | Wrong child parameters; missing returned result; wrong base case | Coding begins before defining the function's meaning | Write one sentence: "This function returns..." |
 | Tree-path semantics | Whole-tree sum vs root-to-leaf Path Sum; incorrect leaf definition; min-depth null child | Visual tree terms are interpreted loosely | Define path and leaf before writing recurrence |
-| State leakage/shadowing | Stale carry; local variable shadows result | State is updated in multiple places | Compute next state once per iteration with distinct names |
+| Assignment versus equality | `candidate = 0` or `count = 0` inside a condition | `=` mutates and evaluates to the assigned value; it does not compare | Read conditions aloud and use `==` when asking a question |
+| Initialization | Uninitialized `max_count` or reversed-bit result | A value is read before it has a defined starting state | Initialize every accumulator at declaration |
+| State leakage/shadowing / inconsistency | Stale carry; range-loop shadowing; testing `n` while shifting `input` | State is updated in multiple places or similar names drift apart | Compute next state once and test/advance the same variable |
+| Container versus element allocation | Allocated Zigzag rows but indexed empty row strings | Creating outer elements does not create indexed contents inside each string | Use `push_back` for growth; index only existing elements |
+| Operation ordering | Inserted a bit before shifting the reversed result; erased the duplicate instead of the window's left edge | Individually valid operations break the invariant in the wrong order | Trace one iteration as ordered state transitions |
 | Requirement mismatch | Set for in-place deduplication; sort/set for Single Number | First correct-output idea ignores constraints | Translate every constraint into a design test |
 | Directional in-place update | Pascal II updated left-to-right | New values overwrite dependencies | Determine whether dependencies are old-left or old-right |
 | Complexity gap | `O(n^2)` stock-pair search | Brute force models the statement directly | Ask what one summary of the prefix would replace an inner loop |
 | Library/API misconception | Treating `std::reverse` as returning a string | Mutation APIs and value-returning APIs are confused | Check whether the function mutates, returns, or both |
 | Character classification | `isalpha` instead of `isalnum` | Similar API names hide semantic differences | Restate the exact accepted character set |
-| Syntax and naming | Typos, missing semicolons, type name used as a variable | C++ syntax load distracts from algorithm logic | Compile after the smallest complete unit and read the first error |
+| Edge cases | Missing `numRows == 1`; empty inputs; final carry; null children | The main path is coded before boundary behavior is named | List smallest, empty, and boundary inputs before coding |
+| Syntax and punctuation | Typos, missing semicolons/returns, stray semicolon after `for`, brace/`else` mismatch | C++ syntax load distracts from algorithm logic | Compile after the smallest complete unit and read the first error |
 
 ### Concrete safety patterns
 
@@ -849,12 +1062,12 @@ memory safety and termination.
 
 | Topic | What was learned | Problems that exercised it |
 |---|---|---|
-| `std::vector` | Indexing, references, in-place writes, capacity already reserved by a problem | Remove Duplicates, Remove Element, Merge Sorted Array, Pascal I/II, Plus One |
-| `std::string` | Indexing, `substr`, character arithmetic, normalization, reverse-in-place | Palindrome Number, `strStr`, Add Binary, Valid Palindrome, Excel Column Title |
+| `std::vector` | Indexing, references, in-place writes, outer allocation versus inner element contents | Remove Duplicates, Remove Element, Merge Sorted Array, Pascal I/II, Plus One, Zigzag Conversion |
+| `std::string` | Indexing, `substr`, `push_back`, character arithmetic, normalization, reverse-in-place | Palindrome Number, `strStr`, Add Binary, Valid Palindrome, Excel columns, Zigzag Conversion |
 | `std::stack` | LIFO matching and safe `top()` / `pop()` access | Valid Parentheses, iterative preorder |
 | `std::queue` | FIFO model and level-order/BFS reasoning | Minimum Depth alternative and tree level-order study |
-| `std::unordered_set` | Fast membership, no indexing/order, extra-space tradeoff | Early deduplication and cycle/single-number alternatives |
-| `std::unordered_map` | Key-value lookup and frequency counting | General character-counting study and matching alternatives |
+| `std::unordered_set` | Fast membership, no indexing/order, extra-space tradeoff, sliding-window membership | Early deduplication, cycle/single-number alternatives, Longest Substring |
+| `std::unordered_map` | Key-value lookup, frequency counting, and increment semantics | General character-counting study and Majority Element |
 | `std::priority_queue` | Heap interface and max-heap default | General topic; not counted as a distinct solved problem |
 | Linked lists | `ListNode*`, `->`, traversal, splicing, identity, dummy heads | Merge Lists, Deduplicate List, Cycle, Intersection, Add Two Numbers |
 | Binary trees | Null/leaf semantics, subtree contracts, DFS orders, height/depth | Same Tree through Binary Tree Preorder Traversal |
@@ -862,8 +1075,10 @@ memory safety and termination.
 | Binary search | Half-open intervals and lower-bound invariant | Search Insert Position |
 | Recursion | Base cases, progress, return propagation, mirrored parameters | Tree problems and initial Climbing Stairs |
 | Dynamic programming | Reusing previous states and preserving dependencies | Climbing Stairs, Pascal's Triangle II |
-| Bit manipulation | XOR cancellation | Single Number |
-| Arithmetic simulation | Carry propagation and 1-indexed base conversion | Plus One, Add Binary, Excel title, Add Two Numbers |
+| Sliding window | Maintaining a valid interval while left and right pointers move | Longest Substring Without Repeating Characters |
+| Boyer-Moore voting | Majority cancellation with a candidate and count invariant | Majority Element |
+| Bit manipulation | XOR cancellation, low-bit testing, shifts, OR, and clearing the lowest set bit | Single Number, Reverse Bits, Number of 1 Bits |
+| Arithmetic simulation | Carry propagation and 1-indexed base conversion in both directions | Plus One, Add Binary, both Excel column problems, Add Two Numbers |
 | Complexity analysis | Correctness versus constraint compliance | Stock, Single Number, Balanced Tree, in-place problems |
 
 ## Progression and strengths
@@ -887,13 +1102,26 @@ memory safety and termination.
    pairs, sets, sorting, and streams are often reasonable correctness-first
    approaches. The next skill is evaluating them systematically against every
    stated constraint.
+7. **Medium-level iteration is underway.** Longest Substring introduced a true
+   sliding-window invariant, while Zigzag Conversion showed how choosing one
+   output string per row can replace fragile two-dimensional coordinates.
+8. **Counting and compact state both improved.** Majority Element connected
+   hash-map frequency counting to Boyer-Moore's `O(1)`-space cancellation
+   invariant.
+9. **Numeric representations now work in both directions.** The two Excel
+   column problems connect repeated digit extraction with left-to-right
+   positional accumulation.
+10. **Foundational bit operations are established.** Low-bit testing, shifts,
+    OR, fixed-width iteration, and `n &= n - 1` now form a reusable base for
+    later bit problems.
 
 ## Recommended next learning plan
 
 ### Phase 1: Correctness mechanics (1 week)
 
-- Re-solve five representative problems without notes: Remove Element, Search
-  Insert Position, Merge Two Sorted Lists, Minimum Depth, and Add Two Numbers.
+- Re-solve six representative problems without notes: Search Insert Position,
+  Merge Two Sorted Lists, Minimum Depth, Longest Substring, Zigzag Conversion,
+  and Reverse Bits.
 - Before coding each one, write:
   - valid index/pointer range;
   - loop or recursive invariant;
@@ -929,15 +1157,29 @@ memory safety and termination.
   - set/sort solutions into algebraic constant-space logic (Single Number);
   - full-table DP into rolling state (Climbing Stairs, Pascal II);
   - extra output buffers into safe backward in-place writes (Merge Sorted
-    Array).
+    Array);
+  - hash counting into Boyer-Moore voting (Majority Element);
+  - 32-step bit scans into set-bit-only iteration (Number of 1 Bits).
 - Record both versions and explain precisely what resource changed.
 
-### Phase 5: Consolidation and expansion
+### Phase 5: Hashing, bases, and bits consolidation
+
+- Re-solve Longest Substring and Majority Element, stating each invariant before
+  coding.
+- Implement both Excel column conversions back-to-back and explain why one uses
+  decrement-before-remainder while the other uses multiply-then-add.
+- Trace Reverse Bits with a small-width example and implement Number of 1 Bits
+  with both shifting and Brian Kernighan's method.
+- For every loop, verify initialization, condition, state update, and operation
+  order before compiling.
+
+### Phase 6: Expansion
 
 - Add hash-map problems such as Two Sum and Valid Anagram.
 - Add queue/BFS problems such as Binary Tree Level Order Traversal.
 - Add two-pointer problems such as Move Zeroes.
-- Add one basic heap problem after `priority_queue` operations are comfortable.
+- Add one basic heap problem after `priority_queue` operations are comfortable,
+  then try one additional sliding-window problem.
 - Use spaced repetition: revisit a problem after 1 day, 1 week, and 1 month,
   coding from the invariant rather than memorizing lines.
 
