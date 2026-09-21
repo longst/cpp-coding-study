@@ -8,6 +8,10 @@
 | `std::unordered_map` | Studied | Key-value storage, frequency counting, lookup, prefix increment | Character count, Majority element |
 | `std::stack` | Studied | LIFO, `push`, `pop`, `top`, `empty`; `pop()` returns `void`; use input/output stacks to simulate FIFO | Valid parentheses, Implement queue using stacks |
 | `std::queue` | Started | FIFO, `push`, `pop`, `front`, `back`, `size`, `empty`; simulate LIFO with two queues or rotate one queue after each push | Implement stack using queues, BFS, queue simulation |
+| `std::unordered_set` | Studied | Unique values, `insert`, `erase`, `count`, `find`, C++20 `contains`, no stable order or indexing | Contains duplicate, Longest substring without repeating characters |
+| `std::unordered_map` | Studied | Key-value storage, frequency counting, lookup, prefix increment | Character count, Majority element |
+| `std::stack` | Studied | LIFO, `push`, `pop`, `top`, `empty`; check empty before `top`/`pop` | Valid parentheses |
+| `std::queue` | Planned | FIFO, `push`, `pop`, `front`, `back`, `empty` | BFS, queue simulation |
 | `std::priority_queue` | Planned | Heap behavior, max-heap by default, custom comparator | K largest, top K frequent |
 | Linked list | Started | `ListNode`, pointer movement, dummy node, splicing nodes, deleting matching nodes, reversing links, fast/slow pointers, comparing two list halves | Merge two sorted lists, Remove linked list elements, Reverse linked list, Palindrome linked list |
 | Binary search | Started | `left`, `right`, midpoint, insertion position | Search insert position |
