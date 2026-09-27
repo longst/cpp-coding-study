@@ -6,14 +6,11 @@
 | `std::string` | Studied | Indexing, `size()`, `substr()`, `find()`, `push_back()`, `std::istringstream` | strStr, Length of last word, Zigzag conversion |
 | `std::unordered_set` | Studied | Unique values, `insert`, `erase`, `count`, `find`, C++20 `contains`, no stable order or indexing, maintaining a fixed-size sliding window | Contains duplicate, Contains Duplicate II, Longest substring without repeating characters |
 | `std::unordered_map` | Studied | Key-value storage, frequency counting, lookup, prefix increment | Character count, Majority element |
-| `std::stack` | Studied | LIFO, `push`, `pop`, `top`, `empty`; `pop()` returns `void`; use input/output stacks to simulate FIFO | Valid parentheses, Implement queue using stacks |
+| `std::stack` | Studied | LIFO, `push`, `pop`, `top`, `empty`; `pop()` returns `void`; simulate FIFO, resolve parent directories, and validate push/pop sequences | Valid parentheses, Implement queue using stacks, Simplify Path, Validate Stack Sequences |
 | `std::queue` | Started | FIFO, `push`, `pop`, `front`, `back`, `size`, `empty`; simulate LIFO with two queues or rotate one queue after each push | Implement stack using queues, BFS, queue simulation |
-| `std::unordered_set` | Studied | Unique values, `insert`, `erase`, `count`, `find`, C++20 `contains`, no stable order or indexing | Contains duplicate, Longest substring without repeating characters |
-| `std::unordered_map` | Studied | Key-value storage, frequency counting, lookup, prefix increment | Character count, Majority element |
-| `std::stack` | Studied | LIFO, `push`, `pop`, `top`, `empty`; check empty before `top`/`pop` | Valid parentheses |
-| `std::queue` | Planned | FIFO, `push`, `pop`, `front`, `back`, `empty` | BFS, queue simulation |
 | `std::priority_queue` | Planned | Heap behavior, max-heap by default, custom comparator | K largest, top K frequent |
 | Linked list | Started | `ListNode`, pointer movement, dummy node, splicing nodes, deleting matching nodes, reversing links, fast/slow pointers, comparing two list halves | Merge two sorted lists, Remove linked list elements, Reverse linked list, Palindrome linked list |
-| Binary search | Started | `left`, `right`, midpoint, insertion position | Search insert position |
+| Binary search | Started | `left`, `right`, midpoint, insertion position, partitioning two sorted arrays around a combined median | Search insert position, First bad version, Median of two sorted arrays |
 | Bitwise operations | Studied | `&`, `\|`, `<<`, `>>`, low-bit extraction, clearing the lowest set bit, unsigned 32-bit values | Single number, Reverse bits, Number of 1 bits |
-| Binary tree | Started | `TreeNode`, leaf detection, recursive DFS, carrying root-to-current path state | Binary Tree Paths |
+| Binary tree | Started | `TreeNode`, leaf detection, recursive DFS, backtracking path state, common root-path prefix as the lowest common ancestor | Binary Tree Paths, Step-By-Step Directions From a Binary Tree Node to Another |
+| Intervals / greedy | Started | Sort intervals by ending time, retain the earliest finishing compatible interval, allow touching endpoints | Non-overlapping Intervals |
