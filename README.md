@@ -25,7 +25,7 @@ This repository is my local record for learning C++ through data structures and 
 ## Learning history
 
 - [Detailed C++ and LeetCode learning history](reports/cpp-leetcode-learning-history.md)
-  - 37 distinct problems, counted without duplicate revisions or general topics
+  - 31 distinct problems, counted without duplicate revisions or general topics
   - per-problem techniques, approaches, mistakes, corrections, and complexity
   - recurring error taxonomy, progression, next plan, and review checklist
 
